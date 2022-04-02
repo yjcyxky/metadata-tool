@@ -1,0 +1,36 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src"]
+
+ :dependencies [[binaryage/devtools "0.9.7"]
+                [cljsjs/d3 "5.12.0-0"]
+                [reagent "0.8.0-alpha2"]]
+
+ :repositories {"central" {:url "https://maven.aliyun.com/repository/central"}
+                "jcenter" {:url "https://maven.aliyun.com/repository/jcenter"}
+                "clojars" {:url "https://mirrors.tuna.tsinghua.edu.cn/clojars/"}}
+
+ ;; set an nrepl port for connection to a REPL.
+ :nrepl        {:port 3333}
+
+ :builds
+ {:app {:target :browser
+        :output-dir "resources/report/js/"
+        :asset-path "/js/"
+
+        :compiler-options {:output-feature-set :es-next}
+
+        :modules
+        {:main
+         {:entries [metadata-report.core]
+          :init-fn metadata-report.core/init}}
+
+        :devtools
+        ;; before live-reloading any code call this function
+        {:before-load metadata-report.core/stop
+         ;; after live-reloading finishes call this function
+         :after-load metadata-report.core/start
+         ;; serve the public directory over http at port 8700
+         :http-root    "public"
+         :http-port    3000
+         :preloads     [devtools.preload]}}}}

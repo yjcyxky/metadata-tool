@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "deps": "yarn install",
+    "watch": "shadow-cljs watch app;",
+    "release": "shadow-cljs release app;",
+    "server": "shadow-cljs server;",
+    "clean": "rm -rf target; rm -rf public/js/compiled"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.15.12"
+  },
+  "dependencies": {
+    "@jupyter-widgets/base": "^4.1.0",
+    "create-react-class": "^15.6.2",
+    "escher": "^1.7.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "shadow-cljs": "^2.15.12"
+  }
+}

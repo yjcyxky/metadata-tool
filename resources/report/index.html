@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Metadata Report: A modular tool to aggregate results from metadata tables into a single report">
+    <meta name="author" content="MetadataReport">
+    <style type="text/css">{{ embeded_data.css }}</style>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ embeded_data.icon }}">
+    <script type="application/json" id="data">{{ embeded_data.data }}</script>
+    <script type="application/json" id="config">{{ embeded_data.config }}</script>
+    <script type="text/javascript">{{ embeded_data.js_code }}</script>
+  </head>
+  <body>
+    <div id="app">
+      <div id="map_container">
+        MetdataReport rocks!
+      </div>
+    </div>
+    <script>metadata_report.core.init();</script>
+  </body>
+</html>

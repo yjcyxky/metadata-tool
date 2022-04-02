@@ -1,0 +1,9 @@
+node_modules
+.shadow-cljs
+resources/report/js/
+.clj-kondo
+yarn-error.log
+.lein-failures
+.nrepl-port
+target/
+.lein-repl-history
