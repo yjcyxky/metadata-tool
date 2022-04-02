@@ -1,8 +1,9 @@
-(ns metadata-util.formatter
+(ns metadata-tool.tasks.report
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [byte-streams :refer [to-byte-array]]
-            [clojure.string :as clj-str])
+            [clojure.string :as clj-str]
+            [selmer.parser :refer [render]])
   (:import [java.nio.file Path Files Paths LinkOption]
            [java.io File]
            [clojure.lang PersistentHashMap IFn]
@@ -92,3 +93,16 @@
                         :js_code jspath
                         :css csspath
                         :icon iconpath}))
+
+
+(defn- render-html!
+  [^String html-string data]
+  (render html-string {:embeded_data data}))
+
+(defn render-to-file!
+  [^String dest-html-path ^PersistentHashMap data ^PersistentHashMap config]
+  (let [js-file (cache-resource-file! "report/js/main.js")
+        formatted-data (gen-embeded-data data config js-file)
+        src-html (slurp (.toString (cache-resource-file! "report/index.html")))
+        rendered-html (render-html! src-html formatted-data)]
+    (spit dest-html-path rendered-html)))

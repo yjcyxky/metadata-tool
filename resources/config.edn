@@ -1,0 +1,4 @@
+{
+ ;; FIX BUG: Could not find a non empty configuration file to load. looked in the classpath (as a "resource") and on a file system via "conf" system property
+ :notification-types "rescan_values,sync_schema"
+}
