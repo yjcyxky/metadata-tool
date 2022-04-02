@@ -12,7 +12,9 @@
                  [org.clojure/tools.logging "1.1.0"]
                  [com.github.yjcyxky/local-fs "0.1.5"]
                  [cprop "0.1.17"]
-                 [expound "0.8.9"]                              ; Human-optimized error messages for clojure.spec
+                 [camel-snake-kebab "0.4.2"]
+                 [expound "0.9.0"]                                      ; Human-optimized error messages for clojure.spec
+                 [colorize "0.1.1" :exclusions [org.clojure/clojure]]   ; string output with ANSI color codes (for logging)
                  [org.clj-commons/byte-streams "0.2.10"]]
   :main metadata-tool.core
   :aot [metadata-tool.core]

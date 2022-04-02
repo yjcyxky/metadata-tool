@@ -4,7 +4,9 @@
             [local-fs.core :refer [directory?]]
             [clojure.string :as clj-str]
             [metadata-tool.version :refer [version]]
-            [metadata-tool.config :refer [init-config! config-valid? get-debug-msg]]
+            [metadata-tool.config :refer [init-config! config-valid?
+                                          debug-config debug-database-config
+                                          debug-notification-config]]
             [clojure.tools.logging :as log]))
 
 (def cli-options
@@ -12,6 +14,8 @@
     :validate [#(directory? %) "Must be a valid directory"]]
    ["-v" "--version" "Show version" :default false]
    ["-D" "--debug" "Show debug messages" :default false]
+   ["-m" "--enable-syncdb" "Enable sync to database." :default false]
+   ["-n" "--enable-notify" "Enable notify user by dingtalk" :default false]
    ["-h" "--help"]])
 
 (defn usage [options-summary]
@@ -28,6 +32,10 @@
 (defn error-msg [errors]
   (str "The following errors occurred while parsing your command:\n\n"
        (clj-str/join \newline errors)))
+
+(defn exit [status msg]
+  (println msg)
+  (System/exit status))
 
 (defn validate-args
   "Validate command line arguments. Either return a map indicating the program
@@ -49,23 +57,20 @@
       :else ; failed custom validation => exit with usage summary
       (let [config (init-config! options)
             valid? (config-valid? config)
-            debug-mode (:debug options)]
-        (when (and debug-mode (not valid?))
-          (println (get-debug-msg config)))
+            debug-mode (:debug options)
+            error-msg (cond
+                        (not valid?) (debug-config config debug-mode)
+                        (:enable-syncdb config) (debug-database-config config debug-mode)
+                        (:enable-notification config) (debug-notification-config config debug-mode))]
+        (when error-msg (exit 1 error-msg))
         {:config config
-         :valid? valid?
-         :exit-message (usage summary)}))))
-
-(defn exit [status msg]
-  (println msg)
-  (System/exit status))
+         :exit-message (if valid? nil (usage summary))}))))
 
 (defn -main
   "Launch metadata-tool."
   [& args]
-  (let [{:keys [config valid? exit-message ok?]} (validate-args args)]
+  (let [{:keys [config exit-message ok?]} (validate-args args)]
     (when exit-message
       (exit (if ok? 0 1) exit-message))
-    (when valid?
-      (println "Everything is okay!" config))
+    (println "Everything is okay!" config)
     (shutdown-agents)))
