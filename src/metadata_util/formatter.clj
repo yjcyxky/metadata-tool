@@ -72,7 +72,7 @@
   (let [resource-file (io/resource filepath)
         filename (last (clj-str/split (.getFile resource-file) #"/"))
         temp-file (File/createTempFile filename nil)]
-    (spit temp-file (slurp resource-file))
+    (io/copy (io/file resource-file) temp-file)
     (get-path (.toString temp-file))))
 
 (defn gen-embeded-data

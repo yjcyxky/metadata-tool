@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Metadata Report: A modular tool to aggregate results from metadata tables into a single report">
     <meta name="author" content="MetadataReport">
-    <style type="text/css">{{ embeded_data.css }}</style>
+    <!-- More Details on https://github.com/yogthos/Selmer#safe -->
+    <style type="text/css">{{ embeded_data.css|safe }}</style>
     <link rel="icon" type="image/png" sizes="32x32" href="{{ embeded_data.icon }}">
-    <script type="application/json" id="data">{{ embeded_data.data }}</script>
-    <script type="application/json" id="config">{{ embeded_data.config }}</script>
-    <script type="text/javascript">{{ embeded_data.js_code }}</script>
+    <script type="application/json" id="data">{{ embeded_data.data|safe }}</script>
+    <script type="application/json" id="config">{{ embeded_data.config|safe }}</script>
+    <script type="text/javascript">{{ embeded_data.js_code|safe }}</script>
   </head>
   <body>
     <div id="app">
