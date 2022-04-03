@@ -1,28 +1,97 @@
 # Metadata Tool
+Make a QC report for metadata & sync all metadata to a database (e.g. MySQL/PostgreSQL/SQLite).
 
-## Run
+## Features
+- [x] AutoDetect table schema based on the metadata tables.
+- [x] Sync all metadata tables to a specified database (Such as MySQL/PostgreSQL/SQLite).
+- [ ] Generate Interactive QC report for a set of metadata tables.
+- [ ] Validate fields in the metadata tables based on a set of custom-defined and predefined schema, please access the [biodata-validator](https://github.com/yjcyxky/biodata-validator.git) project for more details.
+- [ ] Please submit a pull request if you have any ideas.
 
-``` shell
-yarn install
+## Get Started for Users
+### Prepare your metadata
+Please follow the [`SEQC DataHub`](https://github.com/biominer-lab/seqc-datahub) repo or the [`DataHub`](https://github.com/biominer-lab/datahub) repo to learn how to prepare the metadata.
 
-yarn watch
+```
+.
+├── project
+│   └── project_20220226.csv
+├── donor
+│   └── donor_20220226.csv
+├── biospecimen
+│   └── biospecimen_20220316.csv
+├── reference_materials
+│   └── reference_materials_20220226.csv
+├── library
+│   ├── CBCGA_library_20220304.csv
+│   ├── FDUVAZ_4family_library_20220304.csv
+│   ├── Pool4project_library_20220304.csv
+│   ├── Quartet_library_20220304.csv
+│   ├── published_library_20220304.csv
+│   └── published_ma_library_20220304.csv
+├── sequencing
+│   ├── CBCGA_sequencing_20220306.csv
+│   ├── FDUVAZ_4family_sequencing_20220306.csv
+│   ├── Pool4project_sequencin_202200306.csv
+│   ├── Quartet_sequencing_20220306.csv
+│   ├── published_ma_sequencing_20220306.csv
+│   └── published_sequencing_20220306.csv
+├── datafile
+│   ├── CBCGA_datafile_20220306.csv
+│   ├── FDUVAZ_4family_datafile_20220306.csv
+│   ├── GSE47774_datafile_20220306.csv
+│   ├── Pool4project_datafile_20220306.csv
+│   ├── Quartet_datafile_20220226.csv
+│   ├── otherGEO_datafile_20220306.csv
+│   └── published_ma_datafile_20220306.csv
 ```
 
-## Clean
+### How to use it?
 
 ``` shell
-yarn clean
+java -jar metadata-tool-0.1.0-standalone.jar -h
+# MetadataTool - For metadata QC & QC.
+
+# Usage: metadata-tool [options]
+
+# Options:
+#   -d, --data-dir PATH  Data Directory
+#   -v, --version        Show version
+#   -D, --debug          Show debug messages
+#   -m, --enable-syncdb  Enable sync to database.
+#   -n, --enable-notify  Enable notify user by dingtalk
+#   -h, --help
+
+# Please refer to the manual page for more information.
 ```
 
-## Release
+## Get Started for Developers
+
+### Clone the repo
+``` shell
+git clone https://github.com/metadata-tool.git
+cd metadata-tool
+```
+
+### Make an uberjar
 
 ``` shell
-yarn release
+lein uberjar
 ```
+
+### Unittest
+
+``` shell
+lein test
+```
+
+## Contributing
+
+Comming soon...
 
 ## License
 
-Copyright © 2017 FIXME
+Copyright © 2022 Jingcheng Yang
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

@@ -102,7 +102,7 @@
                           "`export AUTH_VALUE=xxx`"))
 (s/def ::auth-value string?)
 
-(s/def ::database (s/keys :req-un [::db-host ::db-port ::db-name ::db-user ::db-passwd
+(s/def ::database (s/keys :req-un [::db-host ::db-type ::db-port ::db-name ::db-user ::db-passwd
                                    ::metabase-url ::dataset-id ::auth-key ::auth-value]))
 
 ;; --------------------------- Notifications ---------------------------
