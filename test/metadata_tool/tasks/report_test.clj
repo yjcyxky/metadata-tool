@@ -1,4 +1,4 @@
-(ns metadata-tool.tasks.test-report
+(ns metadata-tool.tasks.report-test
   (:require [clojure.test :refer :all]
             [metadata-tool.tasks.report :as report]))
 
