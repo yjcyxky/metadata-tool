@@ -8,12 +8,14 @@
             [camel-snake-kebab.core :as csk]))
 
 (def default-config {:data-dir          nil
+                     :enable-syncdb     false
+                     :enable-notify     false
 
                      :db-host           nil
                      :db-name           nil
                      :db-user           nil
                      :db-passwd         nil
-                     :db-type           "mysql"
+                     :db-type           "sqlite"
                      :db-port           3306
                      :metabase-url      nil
                      :dataset-id        0
@@ -28,15 +30,15 @@
                      :notification-enabled   true
                      :notification-plugin    "dingtalk"})
 
-(def default-keys [:data-dir
-                   :db-host :db-name :db-user :db-passwd :db-type :db-port
-                   :metabase-url :dataset-id :auth-type :auth-key :auth-value
+(def common-config-keys [:data-dir :enable-syncdb :enable-notify])
 
-                   :dingtalk-access-token :dingtalk-access-secret
-                   :dingtalk-username :notification-types
-                   :notification-enabled :notification-plugin
+(def db-config-keys [:db-host :db-name :db-user :db-passwd :db-type :db-port
+                     :metabase-url :dataset-id :auth-type :auth-key :auth-value])
 
-                   :enable-syncdb :enable-notify])
+(def notification-config-keys [:dingtalk-access-token :dingtalk-access-secret
+                               :dingtalk-username :notification-types
+                               :notification-enabled :notification-plugin])
+(def default-keys (concat common-config-keys db-config-keys notification-config-keys))
 
 (defn init-config!
   [args]
@@ -124,19 +126,24 @@
 (s/def ::enable-syncdb boolean?)
 (s/def ::enable-notify boolean?)
 
-(s/def ::config (s/keys :req-un [::data-dir]
-                        :opt-un [::db-host ::db-port ::db-name ::db-user ::db-passwd ::metabase-url
-                                 ::dataset-id ::auth-key ::auth-value ::db-type ::notification-enabled
-                                 ::notification-plugin ::dingtalk-access-token ::dingtalk-access-secret
-                                 ::dingtalk-username ::enable-syncdb ::enable-notify]))
+(s/def ::common-config (s/keys :req-un [::data-dir ::enable-syncdb ::enable-notify]
+                               :opt-un []))
 
-(defn config-valid?
+(defn common-config-valid?
   [config]
-  (s/valid? ::config config))
+  (s/valid? ::common-config config))
 
 (defn db-config-valid?
   [config]
   (s/valid? ::database config))
+
+(defn get-db-config
+  [config]
+  (select-keys config db-config-keys))
+
+(defn get-notification-config
+  [config]
+  (select-keys config notification-config-keys))
 
 (defn notification-config-valid?
   [config]
@@ -150,7 +157,7 @@
          :value any?)
   :ret string?)
 
-(defn value-str [_spec-name form path value]
+(defn value-str [_spec-name _form path value]
   (let [output-fn (fn [k v] (let [var-name (csk/->SCREAMING_SNAKE_CASE (name k))
                                   highlighted-var-name (util/format-color :red var-name)]
                               (format "Environment variable %s has an invalid value: %s" highlighted-var-name v)))]
@@ -163,7 +170,7 @@
                               :theme :figwheel-theme :value-str-fn value-str})
     (util/format-color :red "Configuration Error: please run with -D option for more information.\n")))
 
-(def debug-config (partial debug ::config))
+(def debug-common-config (partial debug ::common-config))
 
 (def debug-database-config (partial debug ::database))
 

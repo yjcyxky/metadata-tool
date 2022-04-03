@@ -1,4 +1,4 @@
-(ns metadata-report.core
+(ns report.core
   (:require [reagent.core :as reagent]
             ["escher" :as escher]))
 

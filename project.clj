@@ -17,7 +17,7 @@
                  [org.clj-commons/byte-streams "0.2.10"]
 
                  [org.clojure/data.csv "1.0.0"]
-                 [com.github.seancorfield/next.jdbc "1.2.772"]
+                 [org.clojure/java.jdbc "0.7.12"]
                  [org.postgresql/postgresql "42.2.5"]
                  [mysql/mysql-connector-java "5.1.6"]
                  [org.xerial/sqlite-jdbc "3.34.0"]

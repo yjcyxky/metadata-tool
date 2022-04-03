@@ -4,10 +4,9 @@
             [local-fs.core :refer [directory?]]
             [clojure.string :as clj-str]
             [metadata-tool.version :refer [version]]
-            [metadata-tool.config :refer [init-config! config-valid?
-                                          debug-config debug-database-config
-                                          debug-notification-config]]
-            [clojure.tools.logging :as log]))
+            [metadata-tool.util :as util]
+            [metadata-tool.config :as conf]
+            [metadata-tool.csv2sql.core :as csv2sql]))
 
 (def cli-options
   [["-d" "--data-dir PATH" "Data Directory"
@@ -55,16 +54,33 @@
       {:exit-message (format "v%s" version)}
 
       :else ; failed custom validation => exit with usage summary
-      (let [config (init-config! options)
-            valid? (config-valid? config)
+      (let [config (conf/init-config! options)
+            valid? (conf/common-config-valid? config)
             debug-mode (:debug options)
             error-msg (cond
-                        (not valid?) (debug-config config debug-mode)
-                        (:enable-syncdb config) (debug-database-config config debug-mode)
-                        (:enable-notification config) (debug-notification-config config debug-mode))]
+                        (not valid?) (conf/debug-common-config config debug-mode)
+                        (:enable-syncdb config) (conf/debug-database-config config debug-mode)
+                        (:enable-notification config) (conf/debug-notification-config config debug-mode))]
         (when error-msg (exit 1 error-msg))
         {:config config
          :exit-message (if valid? nil (usage summary))}))))
+
+(defn destroy!
+  "destroy will be called when your application
+   shuts down, put any clean up code here"
+  []
+  (shutdown-agents)
+  (println "Metadata tool has shutdown!"))
+
+;; log uncaught exceptions in threads
+(Thread/setDefaultUncaughtExceptionHandler
+ (reify Thread$UncaughtExceptionHandler
+   (uncaughtException [_ thread ex]
+     ;; Force shutdown
+     (destroy!)
+     (println {:what :uncaught-exception
+               :exception ex
+               :where (str "Uncaught exception on" (.getName thread))}))))
 
 (defn -main
   "Launch metadata-tool."
@@ -72,5 +88,21 @@
   (let [{:keys [config exit-message ok?]} (validate-args args)]
     (when exit-message
       (exit (if ok? 0 1) exit-message))
-    (println "Everything is okay!" config)
-    (shutdown-agents)))
+
+    ;; Shutdown
+    ;; (.addShutdownHook (Runtime/getRuntime) (Thread. destroy!))
+
+    ;; Sync Data to database
+    (println (util/format-color :green "Sync all metadata to database..."))
+    (csv2sql/syncdb! (:data-dir config)
+                     :database-config (if (conf/db-config-valid? config)
+                                        (conf/get-db-config config)
+                                        {})
+                     :notification-config (if (conf/notification-config-valid? config)
+                                            (conf/get-notification-config config)
+                                            {}))
+    (println (util/format-color :green "\n\nSync successfully!"))
+
+    ;; Make a QC & QA report
+
+    (destroy!)))
