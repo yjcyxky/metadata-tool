@@ -50,7 +50,7 @@ Please follow the [`SEQC DataHub`](https://github.com/biominer-lab/seqc-datahub)
 
 ``` shell
 java -jar metadata-tool-0.1.0-standalone.jar -h
-# MetadataTool - For metadata QC & QC.
+# MetadataTool - For metadata QC & QA.
 
 # Usage: metadata-tool [options]
 
