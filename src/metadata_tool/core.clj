@@ -55,15 +55,16 @@
 
       :else ; failed custom validation => exit with usage summary
       (let [config (conf/init-config! options)
-            valid? (conf/common-config-valid? config)
+            valid? (and (conf/common-config-valid? config)
+                        (if (:enable-syncdb config) (conf/db-config-valid? config) true)
+                        (if (:enable-notify config) (conf/notification-config-valid? config) true))
             debug-mode (:debug options)
-            error-msg (cond
-                        (not valid?) (conf/debug-common-config config debug-mode)
-                        (:enable-syncdb config) (conf/debug-database-config config debug-mode)
-                        (:enable-notification config) (conf/debug-notification-config config debug-mode))]
-        (when error-msg (exit 1 error-msg))
+            error-msg (do
+                        (when (not valid?) (conf/debug-common-config config debug-mode))
+                        (when (:enable-syncdb config) (conf/debug-database-config config debug-mode))
+                        (when (:enable-notify config) (conf/debug-notification-config config debug-mode)))]
         {:config config
-         :exit-message (if valid? nil (usage summary))}))))
+         :exit-message (if valid? nil (format "%s\n%s" error-msg (usage summary)))}))))
 
 (defn destroy!
   "destroy will be called when your application
