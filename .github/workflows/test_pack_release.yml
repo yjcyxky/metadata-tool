@@ -23,8 +23,8 @@ jobs:
         uses: oxr463/setup-leiningen@0.0.1
         with:
           exec: |
-            sed -i "s/com.github.yjcyxky\/metadata-tool \"0.1.1\"/com.github.yjcyxky\/metadata-tool \"${{steps.config.outputs.version}}\"/g" project.clj && \
-            lein update-version && \
+            sed -i "s/update-me/${{steps.config.outputs.version}}/g" project.clj && \
+            sed -i "s/update-me/${{steps.config.outputs.version}}/g" src/metadata_tool/version.clj && \
             lein test && \
             lein uberjar
 

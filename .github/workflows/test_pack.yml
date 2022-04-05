@@ -24,7 +24,7 @@ jobs:
         with:
           exec: |
             sed -i "s/update-me/${{steps.config.outputs.version}}/g" project.clj && \
-            lein update-version && \
+            sed -i "s/update-me/${{steps.config.outputs.version}}/g" src/metadata_tool/version.clj && \
             lein test && \
             lein uberjar
 
