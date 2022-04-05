@@ -3,11 +3,13 @@
             [clojure.edn :as edn]
             [clojure.java.jdbc :as sql]
             [local-fs.core :as fs]
+            [clojure.string :as clj-str]
             [metadata-tool.csv2sql.guess-schema :as guess]
             [metadata-tool.csv2sql.files :as files]
             [metadata-tool.csv2sql.json :as json]
             [metadata-tool.csv2sql.csvs :as csv]
-            [metadata-tool.csv2sql.util :as util])
+            [metadata-tool.csv2sql.util :as util]
+            [notify-api.adapter.dingtalk :as dingtalk])
   (:import [clojure.lang PersistentHashMap]))
 
 (defn autodetect-sql-schemas!
@@ -108,10 +110,6 @@
     (when-not (connection-ok? db-config)
       (throw (Exception. (str "Unable to connect to DB: " db-config))))
 
-    ;; Notification: I'll update XXX dataset
-    (when (not-empty notification-config)
-      (comment "I'll add notify-api as soon as possible."))
-
     (drop-existing-sql-tables! db-config workdir)
     (json/convert-jsons-to-csvs! workdir)
     (guess/setup-strict-mode true)
@@ -124,5 +122,15 @@
       (util/refresh-metabase! (:metabase-url database-config) (:dataset-id database-config)
                               (:auth-key database-config) (:auth-value database-config)))
 
+    ;; Notification: XXX dataset is updated.
     (when (not-empty notification-config)
-      (comment "I'll add notify-api as soon as possible."))))
+      (let [dingtalk-access-token (:dingtalk-access-token notification-config)
+            dingtalk-access-secret (:dingtalk-access-secret notification-config)
+            metabase-url (clj-str/replace (:metabase-url database-config) #"/$" "")
+            details-url (format "%s/browser/%s" metabase-url (:dataset-id database-config))
+            basename (fs/basename workdir)]
+        (dingtalk/setup-dingtalk dingtalk-access-token dingtalk-access-secret)
+        (dingtalk/send-action-card! "MetadataTool Notification"
+                                    (format "Dataset %s is updated, please click the card to access." basename)
+                                    "Browse the dataset"
+                                    details-url)))))

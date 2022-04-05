@@ -4,6 +4,7 @@ Make a QC report for metadata & sync all metadata to a database (e.g. MySQL/Post
 ## Features
 - [x] AutoDetect table schema based on the metadata tables.
 - [x] Sync all metadata tables to a specified database (Such as MySQL/PostgreSQL/SQLite).
+- [x] Send a notification on updated status to dingtalk group.
 - [ ] Generate Interactive QC report for a set of metadata tables.
 - [ ] Validate fields in the metadata tables based on a set of custom-defined and predefined schema, please access the [biodata-validator](https://github.com/yjcyxky/biodata-validator.git) project for more details.
 - [ ] Please submit a pull request if you have any ideas.
