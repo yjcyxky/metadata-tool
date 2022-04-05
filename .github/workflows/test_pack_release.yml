@@ -1,0 +1,42 @@
+name: test-pack-and-release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  test-pack-release:
+    runs-on: ubuntu-latest
+    name: Test, Pack and Release
+    steps:
+      - name: Configure environment
+        id: config
+        run: |
+          VERSION=$(echo $GITHUB_REF | sed -e "s/^refs\/tags\/v//")
+          echo ::set-output name=version::$VERSION
+
+      - name: Fetch repository
+        uses: actions/checkout@master
+
+      - name: Test and pack
+        uses: oxr463/setup-leiningen@0.0.1
+        with:
+          exec: |
+            lein test && lein uberjar && \
+            cp "$(find . -name '*.jar')" .
+
+      - name: Create a pre-release
+        id: pre_release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ steps.config.outputs.version }}"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            LICENSE
+            *.jar
+
+      - name: Output
+        run: echo "${{steps.pre_release.outputs.automatic_releases_tag}}"
