@@ -1,9 +1,9 @@
-name: test-pack-and-release
+name: test-pack
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - dev
 
 jobs:
   test-pack-release:
@@ -28,17 +28,5 @@ jobs:
             lein test && \
             lein uberjar
 
-      - name: Create a pre-release
-        id: pre_release
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ steps.config.outputs.version }}"
-          prerelease: true
-          title: "Pre-release ${{ steps.config.outputs.version }}"
-          files: |
-            LICENSE
-            target/*.jar
-
       - name: Output
-        run: echo "${{steps.pre_release.outputs.automatic_releases_tag}}"
+        run: echo "${{steps.config.outputs.version}}"
