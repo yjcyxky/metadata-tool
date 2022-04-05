@@ -23,8 +23,7 @@ jobs:
         uses: oxr463/setup-leiningen@0.0.1
         with:
           exec: |
-            lein test && lein uberjar && \
-            cp "$(find . -name '*.jar')" .
+            lein test && lein uberjar
 
       - name: Create a pre-release
         id: pre_release
@@ -36,7 +35,7 @@ jobs:
           title: "Development Build"
           files: |
             LICENSE
-            *.jar
+            target/*.jar
 
       - name: Output
         run: echo "${{steps.pre_release.outputs.automatic_releases_tag}}"
