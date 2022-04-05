@@ -1,3 +1,3 @@
 (ns metadata-tool.version)
 
-(def version "0.1.1")
+(def version "update-me")

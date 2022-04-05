@@ -1,4 +1,4 @@
-(defproject com.github.yjcyxky/metadata-tool "0.1.1"
+(defproject com.github.yjcyxky/metadata-tool "update-me"
   :description "For Metadata QC & QA."
   :url "https://github.com/yjcyxky/metadata-tool.git"
   :license {:name "Eclipse Public License"
