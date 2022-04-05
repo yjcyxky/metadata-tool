@@ -8,7 +8,7 @@ on:
 jobs:
   test-pack-release:
     runs-on: ubuntu-latest
-    name: Test, Pack and Release
+    name: Test and Pack
     steps:
       - name: Configure environment
         id: config

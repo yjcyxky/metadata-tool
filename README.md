@@ -1,5 +1,11 @@
-# Metadata Tool
-Make a QC report for metadata & sync all metadata to a database (e.g. MySQL/PostgreSQL/SQLite).
+<h2 align="center">Metadata Tool</h2>
+<p align="center">Make a QC report for metadata & sync all metadata to a database (e.g. MySQL/PostgreSQL/SQLite)</p>
+
+<p align="center">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/yjcyxky/metadata-tool/test-pack-and-release?label=Build Status">
+<img src="https://img.shields.io/github/license/yjcyxky/metadata-tool.svg?label=License" alt="License"> 
+<a href="https://github.com/yjcyxky/metadata-tool/releases"><img alt="Latest Release" src="https://img.shields.io/github/release/yjcyxky/metadata-tool.svg?label=Latest%20Release"/></a>
+</p>
 
 ## Features
 - [x] AutoDetect table schema based on the metadata tables.
