@@ -23,7 +23,10 @@ jobs:
         uses: oxr463/setup-leiningen@0.0.1
         with:
           exec: |
-            lein test && lein uberjar
+            sed -i "s/com.github.yjcyxky\/metadata-tool \"0.1.1\"/com.github.yjcyxky\/metadata-tool \"${{steps.config.outputs.version}}\"/g" project.clj &&
+            lein update-version &&
+            lein test && 
+            lein uberjar
 
       - name: Create a pre-release
         id: pre_release
@@ -32,7 +35,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "${{ steps.config.outputs.version }}"
           prerelease: true
-          title: "Development Build"
+          title: "Pre-release ${{ steps.config.outputs.version }}"
           files: |
             LICENSE
             target/*.jar
